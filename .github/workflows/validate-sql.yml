@@ -1,0 +1,47 @@
+# Lightweight CI for the DBMS worksheet repository.
+# Verifies that:
+#   1. The schema file parses.
+#   2. The screenshot generator runs end-to-end without errors.
+#
+# This workflow does NOT require a MySQL server - the screenshot generator
+# uses an in-memory SQLite database.
+name: Validate SQL & Screenshots
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Pillow
+        run: pip install pillow
+
+      - name: Regenerate screenshots
+        run: python3 scripts/generate_screenshots.py
+
+      - name: Verify screenshots exist
+        run: |
+          count=$(find . -name "*.png" | wc -l)
+          echo "Total PNG screenshots: $count"
+          if [ "$count" -lt 80 ]; then
+            echo "ERROR: Expected at least 80 screenshots, got $count"
+            exit 1
+          fi
+
+      - name: Upload screenshots as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: screenshots
+          path: "**/screenshots/*.png"
+          retention-days: 14

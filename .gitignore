@@ -1,0 +1,34 @@
+# OS junk
+.DS_Store
+Thumbs.db
+
+# Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+.env
+
+# Local DB artifacts
+*.db
+*.sqlite
+*.sqlite3
+*.log
+
+# Build outputs
+build/
+dist/
+*.zip
+!dbms-worksheet-CH.SC.U4CSE24041.zip
+
+# Local notes (don't commit private notes)
+PRIVATE_*.md
+scratch/
